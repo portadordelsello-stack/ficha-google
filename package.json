@@ -1,6 +1,6 @@
 {
   "name": "qr-google-ficha",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,6 @@
     "vite": "^5.4.21"
   },
   "dependencies": {
-    "canvas": "^3.2.3",
     "qrcode": "^1.5.4"
   }
 }
