@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de Ficha Google con Código QR</title>
-  <meta name="description" content="Genera tu afiche de Google Reseñas con código QR personalizado listo para imprimir.">
+  <meta name="description" content="Genera tu afiche de Google Reseñas con código QR personalizado usando tu Place ID listo para imprimir.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
         </div>
         <h1>Generador de Afiche Google Reseñas</h1>
       </div>
-      <p class="header-subtitle">Ingresa el enlace de tu perfil o reseñas de Google para colocar automáticamente el código QR dentro del afiche.</p>
+      <p class="header-subtitle">Ingresa el Place ID de tu negocio en Google Maps para generar automáticamente el código QR directo a tus reseñas.</p>
     </header>
 
     <!-- Main Content -->
@@ -33,33 +33,42 @@
         <div class="card-header">
           <h2>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            Configuración del Enlace
+            Configuración del Place ID
           </h2>
         </div>
 
         <div class="form-group">
-          <label for="urlInput">Enlace / URL de la Ficha o Reseñas:</label>
+          <label for="placeIdInput">Place ID de tu negocio:</label>
           <div class="input-wrapper">
             <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            <input type="url" id="urlInput" placeholder="Ej: https://g.page/r/tu-negocio/review" autocomplete="off" spellcheck="false" value="https://g.page/r/ejemplo/review">
+            <input type="text" id="placeIdInput" placeholder="Ej: ChIJN1t_tDeuEmsRUsoyG83frY4" autocomplete="off" spellcheck="false" value="ChIJN1t_tDeuEmsRUsoyG83frY4">
             <button id="clearUrlBtn" class="clear-btn" title="Limpiar texto">✕</button>
           </div>
-          <span class="help-text">Puedes pegar tu enlace directo a las reseñas de Google Maps o cualquier URL.</span>
+          
+          <div class="finder-box">
+            <span>¿No sabes tu Place ID? </span>
+            <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer" class="finder-link">
+              Obtén tu Place ID Finder aquí ↗
+            </a>
+          </div>
+
+          <div class="generated-url-preview">
+            <span class="preview-label">URL del código QR generado:</span>
+            <code id="fullUrlPreview">https://search.google.com/local/writereview?placeid=ChIJN1t_tDeuEmsRUsoyG83frY4</code>
+          </div>
         </div>
 
         <!-- Preset buttons -->
         <div class="preset-section">
-          <span class="preset-title">Sugerencias rápidas:</span>
+          <span class="preset-title">Ejemplo rápido:</span>
           <div class="preset-tags">
-            <button class="preset-tag" data-url="https://g.page/r/c/review">Ejemplo Reseñas Google</button>
-            <button class="preset-tag" data-url="https://maps.google.com">Google Maps</button>
+            <button class="preset-tag" data-placeid="ChIJN1t_tDeuEmsRUsoyG83frY4">Ejemplo Place ID</button>
           </div>
         </div>
 

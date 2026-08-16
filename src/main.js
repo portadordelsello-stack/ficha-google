@@ -2,6 +2,7 @@ import QRCode from 'qrcode';
 
 // Template image path
 const TEMPLATE_PATH = '/ficha_google.jpg';
+const GOOGLE_REVIEW_PREFIX = 'https://search.google.com/local/writereview?placeid=';
 
 // Blue box base coordinates in 2016 x 2086 px template
 const BASE_BOX = {
@@ -14,8 +15,9 @@ const BASE_BOX = {
 // DOM Elements
 const canvas = document.getElementById('posterCanvas');
 const ctx = canvas.getContext('2d');
-const urlInput = document.getElementById('urlInput');
+const placeIdInput = document.getElementById('placeIdInput');
 const clearUrlBtn = document.getElementById('clearUrlBtn');
+const fullUrlPreview = document.getElementById('fullUrlPreview');
 const downloadBtn = document.getElementById('downloadBtn');
 const copyBtn = document.getElementById('copyBtn');
 const printBtn = document.getElementById('printBtn');
@@ -72,6 +74,29 @@ function showLoading(show) {
   }
 }
 
+// Extract clean Place ID from input string (handling full URL or raw ID)
+function getCleanPlaceId(inputVal) {
+  let val = inputVal.trim();
+  if (!val) return '';
+
+  // If user pasted a full URL containing placeid=
+  if (val.includes('placeid=')) {
+    const match = val.match(/placeid=([a-zA-Z0-9_\-]+)/);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+
+  // If user pasted a full URL like https://.../ChIJ...
+  if (val.startsWith('http://') || val.startsWith('https://')) {
+    const parts = val.split('/');
+    const lastPart = parts[parts.length - 1].split('?')[0];
+    if (lastPart) return lastPart;
+  }
+
+  return val;
+}
+
 // Render Poster
 async function renderPoster() {
   if (!templateImage) return;
@@ -80,8 +105,16 @@ async function renderPoster() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
 
-  const rawUrl = urlInput.value.trim();
-  if (!rawUrl) return;
+  const rawInput = placeIdInput.value;
+  const cleanPlaceId = getCleanPlaceId(rawInput);
+
+  if (!cleanPlaceId) {
+    fullUrlPreview.textContent = `${GOOGLE_REVIEW_PREFIX}...`;
+    return;
+  }
+
+  const fullQrUrl = `${GOOGLE_REVIEW_PREFIX}${cleanPlaceId}`;
+  fullUrlPreview.textContent = fullQrUrl;
 
   // Calculate box geometry with user adjustments
   const offsetX = parseInt(boxOffsetXInput.value, 10) || 0;
@@ -105,7 +138,7 @@ async function renderPoster() {
   const qrSize = Math.min(baseW, baseH);
   
   try {
-    await QRCode.toCanvas(qrCanvas, rawUrl, {
+    await QRCode.toCanvas(qrCanvas, fullQrUrl, {
       width: qrSize,
       margin: 1, // minimal internal qr quiet zone
       color: {
@@ -145,19 +178,22 @@ function showToast(message, duration = 3000) {
 }
 
 // Event Listeners
-urlInput.addEventListener('input', triggerRender);
+placeIdInput.addEventListener('input', triggerRender);
 
 clearUrlBtn.addEventListener('click', () => {
-  urlInput.value = '';
-  urlInput.focus();
+  placeIdInput.value = '';
+  placeIdInput.focus();
   renderPoster();
 });
 
 // Preset Buttons
 document.querySelectorAll('.preset-tag').forEach(tag => {
   tag.addEventListener('click', () => {
-    urlInput.value = tag.getAttribute('data-url');
-    renderPoster();
+    const placeId = tag.getAttribute('data-placeid');
+    if (placeId) {
+      placeIdInput.value = placeId;
+      renderPoster();
+    }
   });
 });
 
@@ -200,12 +236,13 @@ resetAdjustmentsBtn.addEventListener('click', () => {
 
 // Download Button
 downloadBtn.addEventListener('click', () => {
-  if (!urlInput.value.trim()) {
-    showToast('⚠️ Por favor ingresa un enlace antes de descargar');
+  const cleanId = getCleanPlaceId(placeIdInput.value);
+  if (!cleanId) {
+    showToast('⚠️ Por favor ingresa un Place ID antes de descargar');
     return;
   }
   const link = document.createElement('a');
-  link.download = 'afiche_google_reseñas_qr.png';
+  link.download = `afiche_google_reseñas_${cleanId}.png`;
   link.href = canvas.toDataURL('image/png', 1.0);
   link.click();
   showToast('✅ Afiche descargado con éxito');
