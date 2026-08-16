@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Ficha Google con Código QR</title>
+  <meta name="description" content="Genera tu afiche de Google Reseñas con código QR personalizado listo para imprimir.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="google-dots">
+          <span class="dot dot-blue"></span>
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <h1>Generador de Afiche Google Reseñas</h1>
+      </div>
+      <p class="header-subtitle">Ingresa el enlace de tu perfil o reseñas de Google para colocar automáticamente el código QR dentro del afiche.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Left Panel: Controls -->
+      <section class="control-card">
+        <div class="card-header">
+          <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Configuración del Enlace
+          </h2>
+        </div>
+
+        <div class="form-group">
+          <label for="urlInput">Enlace / URL de la Ficha o Reseñas:</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <input type="url" id="urlInput" placeholder="Ej: https://g.page/r/tu-negocio/review" autocomplete="off" spellcheck="false" value="https://g.page/r/ejemplo/review">
+            <button id="clearUrlBtn" class="clear-btn" title="Limpiar texto">✕</button>
+          </div>
+          <span class="help-text">Puedes pegar tu enlace directo a las reseñas de Google Maps o cualquier URL.</span>
+        </div>
+
+        <!-- Preset buttons -->
+        <div class="preset-section">
+          <span class="preset-title">Sugerencias rápidas:</span>
+          <div class="preset-tags">
+            <button class="preset-tag" data-url="https://g.page/r/c/review">Ejemplo Reseñas Google</button>
+            <button class="preset-tag" data-url="https://maps.google.com">Google Maps</button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Advanced Adjustments -->
+        <details class="advanced-settings" open>
+          <summary>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Ajuste de Posición del Código QR
+          </summary>
+          <div class="settings-grid">
+            <div class="setting-item">
+              <label for="qrPadding">Margen Interno QR: <span id="qrPaddingVal">12</span>px</label>
+              <input type="range" id="qrPadding" min="0" max="60" value="12">
+            </div>
+            <div class="setting-item">
+              <label for="qrColor">Color del QR:</label>
+              <input type="color" id="qrColor" value="#000000">
+            </div>
+            <div class="setting-item">
+              <label for="boxOffsetX">Ajuste Horizontal (X): <span id="boxOffsetXVal">0</span>px</label>
+              <input type="range" id="boxOffsetX" min="-100" max="100" value="0">
+            </div>
+            <div class="setting-item">
+              <label for="boxOffsetY">Ajuste Vertical (Y): <span id="boxOffsetYVal">0</span>px</label>
+              <input type="range" id="boxOffsetY" min="-100" max="100" value="0">
+            </div>
+            <div class="setting-item">
+              <label for="boxSizeAdjust">Escala del Tamaño: <span id="boxSizeAdjustVal">100</span>%</label>
+              <input type="range" id="boxSizeAdjust" min="70" max="130" value="100">
+            </div>
+            <div class="setting-item">
+              <button id="resetAdjustmentsBtn" class="btn-secondary">Restablecer Posición</button>
+            </div>
+          </div>
+        </details>
+
+        <!-- Actions -->
+        <div class="action-buttons">
+          <button id="downloadBtn" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Descargar Afiche (PNG Alta Res)
+          </button>
+          
+          <div class="btn-group">
+            <button id="copyBtn" class="btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copiar Imagen
+            </button>
+            <button id="printBtn" class="btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Imprimir
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Live Preview Canvas -->
+      <section class="preview-card">
+        <div class="preview-header">
+          <span class="preview-badge">Vista Previa en Tiempo Real</span>
+          <span id="canvasDimensions" class="canvas-dimensions">2016 × 2086 px</span>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="posterCanvas" width="2016" height="2086"></canvas>
+          <div id="loadingOverlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <span>Cargando plantilla...</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
