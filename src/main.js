@@ -12,9 +12,33 @@ const BASE_BOX = {
   height: 530
 };
 
+// Formats definition (10x15 aspect ratio 2:3, original, 15x10)
+const FORMATS = {
+  '10x15': {
+    name: '10 × 15 cm (Vertical)',
+    width: 2016,
+    height: 3024,
+    description: '10 × 15 cm (2016 × 3024 px)'
+  },
+  'original': {
+    name: 'Cuadrado Original',
+    width: 2016,
+    height: 2086,
+    description: 'Cuadrado (2016 × 2086 px)'
+  },
+  '15x10': {
+    name: '15 × 10 cm (Horizontal)',
+    width: 3024,
+    height: 2016,
+    description: '15 × 10 cm (3024 × 2016 px)'
+  }
+};
+
 // DOM Elements
 const canvas = document.getElementById('posterCanvas');
 const ctx = canvas.getContext('2d');
+const canvasDimensions = document.getElementById('canvasDimensions');
+const formatSelect = document.getElementById('formatSelect');
 const placeIdInput = document.getElementById('placeIdInput');
 const clearUrlBtn = document.getElementById('clearUrlBtn');
 const fullUrlPreview = document.getElementById('fullUrlPreview');
@@ -101,9 +125,29 @@ function getCleanPlaceId(inputVal) {
 async function renderPoster() {
   if (!templateImage) return;
 
-  // Clear & draw background template
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+  const formatKey = formatSelect ? formatSelect.value : '10x15';
+  const activeFormat = FORMATS[formatKey] || FORMATS['10x15'];
+
+  if (canvas.width !== activeFormat.width || canvas.height !== activeFormat.height) {
+    canvas.width = activeFormat.width;
+    canvas.height = activeFormat.height;
+  }
+  if (canvasDimensions) {
+    canvasDimensions.textContent = activeFormat.description;
+  }
+
+  // Clear & fill with pure white background (Letterbox)
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Compute scale and centering for Letterbox
+  const scale = Math.min(canvas.width / templateImage.width, canvas.height / templateImage.height);
+  const drawW = Math.round(templateImage.width * scale);
+  const drawH = Math.round(templateImage.height * scale);
+  const drawX = Math.round((canvas.width - drawW) / 2);
+  const drawY = Math.round((canvas.height - drawH) / 2);
+
+  ctx.drawImage(templateImage, drawX, drawY, drawW, drawH);
 
   const rawInput = placeIdInput.value;
   const cleanPlaceId = getCleanPlaceId(rawInput);
@@ -116,22 +160,27 @@ async function renderPoster() {
   const fullQrUrl = `${GOOGLE_REVIEW_PREFIX}${cleanPlaceId}`;
   fullUrlPreview.textContent = fullQrUrl;
 
-  // Calculate box geometry with user adjustments
-  const offsetX = parseInt(boxOffsetXInput.value, 10) || 0;
-  const offsetY = parseInt(boxOffsetYInput.value, 10) || 0;
+  // Calculate box geometry with letterbox offset and user adjustments
+  const baseBoxX = drawX + (BASE_BOX.x * scale);
+  const baseBoxY = drawY + (BASE_BOX.y * scale);
+  const baseBoxW = BASE_BOX.width * scale;
+  const baseBoxH = BASE_BOX.height * scale;
+
+  const offsetX = (parseInt(boxOffsetXInput.value, 10) || 0) * scale;
+  const offsetY = (parseInt(boxOffsetYInput.value, 10) || 0) * scale;
   const sizeScale = (parseInt(boxSizeAdjustInput.value, 10) || 100) / 100;
-  const padding = parseInt(qrPaddingInput.value, 10) || 0;
+  const padding = (parseInt(qrPaddingInput.value, 10) || 0) * scale;
   const darkColor = qrColorInput.value || '#000000';
 
-  const baseW = BASE_BOX.width * sizeScale;
-  const baseH = BASE_BOX.height * sizeScale;
+  const baseW = baseBoxW * sizeScale;
+  const baseH = baseBoxH * sizeScale;
   
   // Center adjust when scaling
-  const adjustCenterX = (BASE_BOX.width - baseW) / 2;
-  const adjustCenterY = (BASE_BOX.height - baseH) / 2;
+  const adjustCenterX = (baseBoxW - baseW) / 2;
+  const adjustCenterY = (baseBoxH - baseH) / 2;
 
-  const targetX = BASE_BOX.x + offsetX + adjustCenterX;
-  const targetY = BASE_BOX.y + offsetY + adjustCenterY;
+  const targetX = baseBoxX + offsetX + adjustCenterX;
+  const targetY = baseBoxY + offsetY + adjustCenterY;
 
   // Generate QR Code as offscreen Canvas
   const qrCanvas = document.createElement('canvas');
@@ -178,6 +227,10 @@ function showToast(message, duration = 3000) {
 }
 
 // Event Listeners
+if (formatSelect) {
+  formatSelect.addEventListener('change', triggerRender);
+}
+
 placeIdInput.addEventListener('input', triggerRender);
 
 clearUrlBtn.addEventListener('click', () => {
@@ -241,8 +294,9 @@ downloadBtn.addEventListener('click', () => {
     showToast('⚠️ Por favor ingresa un Place ID antes de descargar');
     return;
   }
+  const formatKey = formatSelect ? formatSelect.value : '10x15';
   const link = document.createElement('a');
-  link.download = `afiche_google_reseñas_${cleanId}.png`;
+  link.download = `afiche_google_reseñas_${formatKey}_${cleanId}.png`;
   link.href = canvas.toDataURL('image/png', 1.0);
   link.click();
   showToast('✅ Afiche descargado con éxito');

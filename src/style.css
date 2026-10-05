@@ -279,6 +279,33 @@ body {
   border-color: #c6dafc;
 }
 
+.format-select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: #fcfcfc;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.format-select:focus {
+  border-color: var(--google-blue);
+  box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+  background-color: #ffffff;
+}
+
+.format-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
 .divider {
   border: 0;
   height: 1px;
@@ -512,19 +539,33 @@ body {
 
 /* Print Styling */
 @media print {
+  @page {
+    size: auto;
+    margin: 0;
+  }
   body {
     background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .app-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   .app-header, .control-card, .preview-header, .toast {
     display: none !important;
   }
   .main-content {
     display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   .preview-card {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
+    margin: 0 !important;
   }
   .canvas-wrapper {
     max-width: 100% !important;
@@ -534,5 +575,7 @@ body {
   canvas {
     width: 100% !important;
     height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
   }
 }

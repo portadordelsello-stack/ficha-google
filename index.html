@@ -72,6 +72,19 @@
           </div>
         </div>
 
+        <!-- Format Selection -->
+        <div class="form-group">
+          <label for="formatSelect">Formato de Salida / Impresión:</label>
+          <div class="select-wrapper">
+            <select id="formatSelect" class="format-select">
+              <option value="10x15" selected>10 × 15 cm (Vertical - Fotográfico estándar)</option>
+              <option value="original">Cuadrado Original (2016 × 2086 px)</option>
+              <option value="15x10">15 × 10 cm (Horizontal)</option>
+            </select>
+          </div>
+          <span class="format-hint">Ajustado con márgenes blancos (Letterbox) para imprimir en papel o portarretratos de 10x15 cm sin recortar el diseño.</span>
+        </div>
+
         <hr class="divider">
 
         <!-- Advanced Adjustments -->
@@ -145,10 +158,10 @@
       <section class="preview-card">
         <div class="preview-header">
           <span class="preview-badge">Vista Previa en Tiempo Real</span>
-          <span id="canvasDimensions" class="canvas-dimensions">2016 × 2086 px</span>
+          <span id="canvasDimensions" class="canvas-dimensions">10 × 15 cm (2016 × 3024 px)</span>
         </div>
         <div class="canvas-wrapper">
-          <canvas id="posterCanvas" width="2016" height="2086"></canvas>
+          <canvas id="posterCanvas" width="2016" height="3024"></canvas>
           <div id="loadingOverlay" class="loading-overlay">
             <div class="spinner"></div>
             <span>Cargando plantilla...</span>
