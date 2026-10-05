@@ -52,6 +52,7 @@ const ctx = canvas.getContext('2d');
 const canvasDimensions = document.getElementById('canvasDimensions');
 const templateSelect = document.getElementById('templateSelect');
 const formatSelect = document.getElementById('formatSelect');
+const borderToggle = document.getElementById('borderToggle');
 const placeIdInput = document.getElementById('placeIdInput');
 const clearUrlBtn = document.getElementById('clearUrlBtn');
 const fullUrlPreview = document.getElementById('fullUrlPreview');
@@ -237,6 +238,21 @@ async function renderPoster() {
   } catch (err) {
     console.error('Error generando QR:', err);
   }
+
+  // Draw perimeter border (default: light gray 0.25 hairline)
+  const isBorderEnabled = borderToggle ? borderToggle.checked : true;
+  if (isBorderEnabled) {
+    // 0.25 pt stroke on high-res canvas (~2px on 2016px canvas)
+    const strokeWidth = Math.max(1, Math.round(canvas.width * 0.001));
+    ctx.strokeStyle = '#d5d7da'; // Subtle light gray 0.25 hairline
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeRect(
+      strokeWidth / 2,
+      strokeWidth / 2,
+      canvas.width - strokeWidth,
+      canvas.height - strokeWidth
+    );
+  }
 }
 
 // Debounced Render for smooth dragging / typing
@@ -272,6 +288,10 @@ if (templateSelect) {
 
 if (formatSelect) {
   formatSelect.addEventListener('change', triggerRender);
+}
+
+if (borderToggle) {
+  borderToggle.addEventListener('change', triggerRender);
 }
 
 placeIdInput.addEventListener('input', triggerRender);
@@ -326,6 +346,7 @@ resetAdjustmentsBtn.addEventListener('click', () => {
   boxOffsetYVal.textContent = 0;
   boxSizeAdjustInput.value = 100;
   boxSizeAdjustVal.textContent = 100;
+  if (borderToggle) borderToggle.checked = true;
   renderPoster();
   showToast('Reajuste de posición restablecido');
 });
