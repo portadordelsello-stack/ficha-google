@@ -1,15 +1,27 @@
 import QRCode from 'qrcode';
 
-// Template image path
-const TEMPLATE_PATH = '/ficha_google.jpg';
-const GOOGLE_REVIEW_PREFIX = 'https://search.google.com/local/writereview?placeid=';
-
-// Blue box base coordinates in 2016 x 2086 px template
-const BASE_BOX = {
-  x: 735,
-  y: 1315,
-  width: 546,
-  height: 530
+// Templates definition
+const TEMPLATES = {
+  '10x15_native': {
+    name: 'Plantilla 10×15 Estilizada',
+    path: '/ficha_google_10x15.jpg',
+    box: {
+      x: 256,
+      y: 778,
+      width: 335,
+      height: 336
+    }
+  },
+  'classic': {
+    name: 'Plantilla Clásica Cuadrada',
+    path: '/ficha_google.jpg',
+    box: {
+      x: 735,
+      y: 1315,
+      width: 546,
+      height: 530
+    }
+  }
 };
 
 // Formats definition (10x15 aspect ratio 2:3, original, 15x10)
@@ -38,6 +50,7 @@ const FORMATS = {
 const canvas = document.getElementById('posterCanvas');
 const ctx = canvas.getContext('2d');
 const canvasDimensions = document.getElementById('canvasDimensions');
+const templateSelect = document.getElementById('templateSelect');
 const formatSelect = document.getElementById('formatSelect');
 const placeIdInput = document.getElementById('placeIdInput');
 const clearUrlBtn = document.getElementById('clearUrlBtn');
@@ -61,19 +74,30 @@ const boxSizeAdjustVal = document.getElementById('boxSizeAdjustVal');
 const resetAdjustmentsBtn = document.getElementById('resetAdjustmentsBtn');
 
 // State
-let templateImage = null;
+const templateImages = {};
 let renderTimeout = null;
+const GOOGLE_REVIEW_PREFIX = 'https://search.google.com/local/writereview?placeid=';
+
+// Get or Load template image
+async function getTemplateImage(key) {
+  if (templateImages[key]) return templateImages[key];
+  const templateConfig = TEMPLATES[key] || TEMPLATES['10x15_native'];
+  const img = await loadImage(templateConfig.path);
+  templateImages[key] = img;
+  return img;
+}
 
 // Initialize
 async function init() {
   showLoading(true);
   try {
-    templateImage = await loadImage(TEMPLATE_PATH);
+    const currentKey = templateSelect ? templateSelect.value : '10x15_native';
+    await getTemplateImage(currentKey);
     showLoading(false);
     renderPoster();
   } catch (error) {
     console.error('Error al cargar la plantilla:', error);
-    showToast('❌ Error al cargar la plantilla ficha_google.jpg');
+    showToast('❌ Error al cargar la plantilla');
     showLoading(false);
   }
 }
@@ -123,6 +147,9 @@ function getCleanPlaceId(inputVal) {
 
 // Render Poster
 async function renderPoster() {
+  const templateKey = templateSelect ? templateSelect.value : '10x15_native';
+  const templateConfig = TEMPLATES[templateKey] || TEMPLATES['10x15_native'];
+  const templateImage = templateImages[templateKey];
   if (!templateImage) return;
 
   const formatKey = formatSelect ? formatSelect.value : '10x15';
@@ -161,10 +188,11 @@ async function renderPoster() {
   fullUrlPreview.textContent = fullQrUrl;
 
   // Calculate box geometry with letterbox offset and user adjustments
-  const baseBoxX = drawX + (BASE_BOX.x * scale);
-  const baseBoxY = drawY + (BASE_BOX.y * scale);
-  const baseBoxW = BASE_BOX.width * scale;
-  const baseBoxH = BASE_BOX.height * scale;
+  const baseBox = templateConfig.box;
+  const baseBoxX = drawX + (baseBox.x * scale);
+  const baseBoxY = drawY + (baseBox.y * scale);
+  const baseBoxW = baseBox.width * scale;
+  const baseBoxH = baseBox.height * scale;
 
   const offsetX = (parseInt(boxOffsetXInput.value, 10) || 0) * scale;
   const offsetY = (parseInt(boxOffsetYInput.value, 10) || 0) * scale;
@@ -227,6 +255,21 @@ function showToast(message, duration = 3000) {
 }
 
 // Event Listeners
+if (templateSelect) {
+  templateSelect.addEventListener('change', async () => {
+    showLoading(true);
+    try {
+      await getTemplateImage(templateSelect.value);
+    } catch (e) {
+      console.error(e);
+      showToast('❌ Error al cambiar de plantilla');
+    } finally {
+      showLoading(false);
+      renderPoster();
+    }
+  });
+}
+
 if (formatSelect) {
   formatSelect.addEventListener('change', triggerRender);
 }
